@@ -2,8 +2,8 @@
 This package is still under development, but has been tested for a number of buttons on VU+.
 
 # Contents
-Import Flow in NodeRED and only IP-Address must be registerd.
-Install META Custom-Driver.
+NodeRED Flow isn't needed anymore.
+Install META Custom-Driver and have Fun.
 
 # Connectiviy
 
