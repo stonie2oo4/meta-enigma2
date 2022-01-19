@@ -1,0 +1,103 @@
+{"name":"Enigma2",
+    "manufacturer":"VU+",
+    "version":1,
+    "type":"DVB",
+    "variables":{
+      "PowerStatus": "",
+      "VolumeStatus": "",
+      "MuteStatus":"",
+      "Channel":"",
+      "EventDescription":"",
+      "EventDescriptionExtended":"",
+      "Eventname":"",
+      "EventDuration":"",
+      "Eventremaining":"",
+      "Recordactiv":"",
+      "enigma2URI": "10.10.50.10"
+    },
+    "labels":{
+        "PowerStatus" :              {"label":"PowerStatus",              "listen":"PowerStatus"},
+        "VolumeStatus" :             {"label":"VolumeStatus",             "listen":"VolumeStatus"},
+        "MuteStatus" :               {"label":"MuteStatus",               "listen":"MuteStatus"},
+        "Channel" :                  {"label":"Channel",                  "listen":"Channel"},
+        "EventDescription" :         {"label":"EventDescription",         "listen":"EventDescription"},
+        "EventDescriptionExtended" : {"label":"EventDescriptionExtended", "listen":"EventDescriptionExtended"},		
+        "Eventname" :                {"label":"Eventname",                "listen":"Eventname"},
+        "EventDuration" :            {"label":"EventDuration",            "listen":"EventDuration"},
+        "Eventremaining" :           {"label":"Eventremaining",           "listen":"Eventremaining"},
+        "Recordactiv" :              {"label":"Recordactiv",              "listen":"Recordactiv"}
+    },
+    "listeners":{
+        "Enigma2PowerStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/powerstate\"}", "pooltime":"3000", "poolduration":"", 
+            "queryresult" : "$.",
+            "evalwrite" : [ 
+                { "variable": "PowerStatus",    "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2powerstate; res.e2instandby[0].replace(/\\s/g, \"\") " }
+            ]
+        },
+        "Enigma2VolumeStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/vol\"}", "pooltime":"3000", "poolduration":"", 
+            "queryresult" : "$.",
+            "evalwrite" : [ 
+                { "variable": "VolumeStatus",  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2volume; res.e2current[0] " },
+                { "variable": "MuteStatus",    "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2volume; res.e2ismuted[0] " }
+            ]
+        },
+        "Enigma2EventStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/getcurrent\"}", "pooltime":"3000", "poolduration":"", 
+            "queryresult" : "$.",
+            "evalwrite" : [ 
+                { "variable": "Channel",                  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventservicename[0] " },
+                { "variable": "EventDescription",         "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventdescription[0] " },
+                { "variable": "Eventname",                "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventname[0] " },
+                { "variable": "EventDescriptionExtended", "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventdescriptionextended[0] " },
+                { "variable": "EventDuration",            "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; Math.round(Number(res.e2eventlist[0].e2event[0].e2eventduration[0])/60) " },
+                { "variable": "Eventremaining",           "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; Math.round(Number(res.e2eventlist[0].e2event[0].e2eventremaining[0])/60) " }
+            ]
+        },
+        "Enigma2RecordStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/timerlist\"}", "pooltime":"3000", "poolduration":"",
+            "queryresult" : "$.",
+            "evalwrite" : [ 
+                { "variable": "Recordactiv",  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2timerlist; res.e2timer[0].e2state[0] " }
+            ]
+        }
+	},	
+    "buttons":{
+       "POWER ON":        {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=4",                         "evaldo":[{"test":true, "then":"__INITIALISE", "or":""}]},
+       "POWER OFF":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=1",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
+       "CHANNEL UP":      {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=106"},
+       "CHANNEL DOWN":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=105"},
+       "CURSOR UP":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=103"},
+       "CURSOR DOWN":     {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=108"},
+       "CURSOR LEFT":     {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=105"},
+       "CURSOR RIGHT":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=106"},
+       "CURSOR ENTER":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=352"},
+       "MENU":            {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=139"},
+       "BACK":            {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=174"},
+       "VOLUME UP":       {"label":"", "type":"http-rest","command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/vol?set=up\"}", "queryresult": "$.", "evalwrite": [ { "variable": "VolumeStatus", "value": "DYNAMIK let res = JSON.parse(\"$Result\").e2volume; res = res.e2current[0]" }]},
+       "VOLUME DOWN":     {"label":"", "type":"http-rest","command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/vol?set=down\"}", "queryresult": "$.", "evalwrite": [ { "variable": "VolumeStatus", "value": "DYNAMIK let res = JSON.parse(\"$Result\").e2volume; res = res.e2current[0]" }]},
+       "MUTE TOGGLE":     {"label":"", "type":"http-rest","command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/vol?set=mute\"}", "queryresult": "$.", "evalwrite": [ { "variable": "MuteStatus", "value": "DYNAMIK let res = JSON.parse(\"$Result\").e2volume; res = res.e2ismuted[0]" }]},
+       "RADIO":           {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=385"},
+       "LIVE":            {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=377"},
+       "AUDIO":           {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=392"},
+       "INFO":            {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=358"},
+       "MY RECORDINGS":   {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=393"},
+       "PLAY":            {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=207"},
+       "PAUSE":           {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=119"},
+       "STOP":            {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=128"},
+       "FORWARD":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=208"},
+       "REVERSE":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=168"},
+       "RECORD":          {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=167"},
+       "FUNCTION RED":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=398"},
+       "FUNCTION GREEN":  {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=399"},
+       "FUNCTION YELLOW": {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=400"},
+       "FUNCTION BLUE":   {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=401"},
+       "DIGIT 0":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=11"},
+       "DIGIT 1":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=2"},
+       "DIGIT 2":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=3"},
+       "DIGIT 3":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=4"},
+       "DIGIT 4":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=5"},
+       "DIGIT 5":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=6"},
+       "DIGIT 6":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=7"},
+       "DIGIT 7":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=8"},
+       "DIGIT 8":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=9"},
+       "DIGIT 9":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=10"}
+    }
+  }
