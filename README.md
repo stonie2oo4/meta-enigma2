@@ -2,8 +2,7 @@
 This package is still under development, but has been tested for a number of buttons on VU+.
 
 # Contents
-NodeRED Flow isn't needed anymore.
-Install META Custom-Driver and have Fun.
+Install META Custom-Driver, Change IP to your need and have Fun.
 
 # Connectiviy
 
