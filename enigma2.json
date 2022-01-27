@@ -1,6 +1,6 @@
 {"name":"Enigma2",
     "manufacturer":"VU+",
-    "version":1,
+    "version":2,
     "type":"DVB",
     "variables":{
       "PowerStatus": "",
@@ -45,9 +45,9 @@
             "queryresult" : "$.",
             "evalwrite" : [ 
                 { "variable": "Channel",                  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventservicename[0] " },
-                { "variable": "EventDescription",         "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventdescription[0] " },
-                { "variable": "Eventname",                "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventname[0] " },
-                { "variable": "EventDescriptionExtended", "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventdescriptionextended[0] " },
+                { "variable": "EventDescription",         "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res = res.e2eventlist[0].e2event[0].e2eventdescription[0]; res[0]!=undefined? res.replace(/(\\r\\n|\\n|\\r)/gm,\" \") : \"N/A\"  " },
+                { "variable": "Eventname",                "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res = res.e2eventlist[0].e2event[0].e2eventname[0]; res[0]!=undefined? res.replace(/(\\r\\n|\\n|\\r)/gm,\" \") : \"N/A\"  " },
+                { "variable": "EventDescriptionExtended", "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res = res.e2eventlist[0].e2event[0].e2eventdescriptionextended[0]; res[0]!=undefined? res.replace(/(\\r\\n|\\n|\\r)/gm,\" \") : \"N/A\"  " },
                 { "variable": "EventDuration",            "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; Math.round(Number(res.e2eventlist[0].e2event[0].e2eventduration[0])/60) " },
                 { "variable": "Eventremaining",           "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; Math.round(Number(res.e2eventlist[0].e2event[0].e2eventremaining[0])/60) " }
             ]
