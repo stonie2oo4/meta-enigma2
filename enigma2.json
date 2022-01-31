@@ -15,13 +15,13 @@
     "register":{
         "registerheadertext": "Enigma2",
         "registerdescription": "Please enter the IP address of your device. \n For example: 192.168.178.1 \n Port 80 is used by default. Specify the port if different.",
-        "command": {"type": "static", "command": ".", "queryresult": "$.*"}        
+        "command": {"type": "static", "command": ".", "queryresult": "$.*"}
     },
     "discover": {
         "welcomeheadertext": "Enigma2",
         "welcomedescription": "powered by meta v2 \n by JAC459 \n X \n Driver Development \n by stonie2oo4 & MarkusM",
         "initcommandset":[{
-            "label":"", 
+            "label":"",
 			"type":"static",
 			"command":"$RegistrationCode",
 			"queryresult":"",
@@ -31,15 +31,15 @@
 			    {"variable":"DevicePort",   "value":"DYNAMIK \"$Result\".split(\":\")[1]!=undefined?\"$Result\".split(\":\")[1]:\"80\" "}
 			]},{
 			"type":"http-rest",
-			"command": "{\"verb\":\"get\",\"call\":\"http://$DeviceURI:$DevicePort/web/deviceinfo\"}", 
+			"command": "{\"verb\":\"get\",\"call\":\"http://$DeviceURI:$DevicePort/web/deviceinfo\"}",
             "queryresult" : "$.e2deviceinfo",
             "evalwrite":[
                 {"variable":"MyDevice",     "value":"DYNAMIK let device = $MyDevice; device.model_name = JSON.parse(\"$Result\").e2devicename[0]; JSON.stringify(device); "},
                 {"variable":"IsRegistered", "value":"DYNAMIK let device = $MyDevice; device.model_name != undefined;"}
-			],			
+			],
 			"evaldo":[{"test":"DYNAMIK let device = $MyDevice; device.model_name != undefined","then":"__PERSIST", "or":""}]}
         ],
-        "command": {"type": "static", "command": "$MyDevice", "queryresult": ""}    
+        "command": {"type": "static", "command": "$MyDevice", "queryresult": ""}
     },
     "template":{
     "dynamicname":"DYNAMIK_INST_START DYNAMIK JSON.parse(\"$Result\").model_name DYNAMIK_INST_END",
@@ -64,29 +64,29 @@
         "MuteStatus" :               {"label":"MuteStatus",               "listen":"MuteStatus"},
         "Channel" :                  {"label":"Channel",                  "listen":"Channel"},
         "EventDescription" :         {"label":"EventDescription",         "listen":"EventDescription"},
-        "EventDescriptionExtended" : {"label":"EventDescriptionExtended", "listen":"EventDescriptionExtended"},		
+        "EventDescriptionExtended" : {"label":"EventDescriptionExtended", "listen":"EventDescriptionExtended"},
         "Eventname" :                {"label":"Eventname",                "listen":"Eventname"},
         "EventDuration" :            {"label":"EventDuration",            "listen":"EventDuration"},
         "Eventremaining" :           {"label":"Eventremaining",           "listen":"Eventremaining"},
         "Recordactiv" :              {"label":"Recordactiv",              "listen":"Recordactiv"}
     },
     "listeners":{
-        "Enigma2PowerStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/powerstate\"}", "pooltime":"3000", "poolduration":"", 
+        "Enigma2PowerStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/powerstate\"}", "pooltime":"3000", "poolduration":"",
             "queryresult" : "$.",
-            "evalwrite" : [ 
+            "evalwrite" : [
                 { "variable": "PowerStatus",    "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2powerstate; res.e2instandby[0].replace(/\\s/g, \"\") " }
             ]
         },
-        "Enigma2VolumeStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/vol\"}", "pooltime":"3000", "poolduration":"", 
+        "Enigma2VolumeStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/vol\"}", "pooltime":"3000", "poolduration":"",
             "queryresult" : "$.",
-            "evalwrite" : [ 
+            "evalwrite" : [
                 { "variable": "VolumeStatus",  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2volume; res.e2current[0] " },
                 { "variable": "MuteStatus",    "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2volume; res.e2ismuted[0] " }
             ]
         },
-        "Enigma2EventStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/getcurrent\"}", "pooltime":"3000", "poolduration":"", 
+        "Enigma2EventStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/getcurrent\"}", "pooltime":"3000", "poolduration":"",
             "queryresult" : "$.",
-            "evalwrite" : [ 
+            "evalwrite" : [
                 { "variable": "Channel",                  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res.e2eventlist[0].e2event[0].e2eventservicename[0] " },
                 { "variable": "EventDescription",         "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res = res.e2eventlist[0].e2event[0].e2eventdescription[0]; res[0]!=undefined? res.replace(/(\\r\\n|\\n|\\r)/gm,\" \") : \"N/A\"  " },
                 { "variable": "Eventname",                "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2currentserviceinformation; res = res.e2eventlist[0].e2event[0].e2eventname[0]; res[0]!=undefined? res.replace(/(\\r\\n|\\n|\\r)/gm,\" \") : \"N/A\"  " },
@@ -97,14 +97,14 @@
         },
         "Enigma2RecordStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/timerlist\"}", "pooltime":"3000", "poolduration":"",
             "queryresult" : "$.",
-            "evalwrite" : [ 
+            "evalwrite" : [
                 { "variable": "Recordactiv",  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2timerlist; res.e2timer[0].e2state[0] " }
             ]
         }
-	},	
+	},
     "buttons":{
        "POWER ON":        {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=4",                         "evaldo":[{"test":true, "then":"__INITIALISE", "or":""}]},
-       "POWER OFF":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=1",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
+       "POWER OFF":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=5",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
        "CHANNEL UP":      {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=106"},
        "CHANNEL DOWN":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=105"},
        "CURSOR UP":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=103"},
