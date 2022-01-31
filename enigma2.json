@@ -1,19 +1,62 @@
-{"name":"Enigma2",
+{   "name":"Enigma2",
     "manufacturer":"VU+",
-    "version":2,
     "type":"DVB",
+    "version":2,
+    "compatible-meta":"1.0.4",
+    "persistedvariables":{
+        "MyDevice": "",
+        "IsRegistered": false,
+        "ToInitiate": true
+    },
+	"variables":{
+	    "DeviceURI": "",
+        "DevicePort":""
+    },
+    "register":{
+        "registerheadertext": "Enigma2",
+        "registerdescription": "Please enter the IP address of your device. \n For example: 192.168.178.1 \n Port 80 is used by default. Specify the port if different.",
+        "command": {"type": "static", "command": ".", "queryresult": "$.*"}        
+    },
+    "discover": {
+        "welcomeheadertext": "Enigma2",
+        "welcomedescription": "powered by meta v2 \n by JAC459 \n X \n Driver Development \n by stonie2oo4 & MarkusM",
+        "initcommandset":[{
+            "label":"", 
+			"type":"static",
+			"command":"$RegistrationCode",
+			"queryresult":"",
+			"evalwrite":[
+			    {"variable":"MyDevice",     "value":"DYNAMIK let device = {\"ip\":\"\", \"port\":\"\", \"model_name\":\"\"};  device.ip = \"$Result\".split(\":\")[0]; device.port = (\"$Result\".split(\":\")[1]!=undefined?\"$Result\".split(\":\")[1]:\"80\"); JSON.stringify(device); "},
+			    {"variable":"DeviceURI",    "value":"DYNAMIK \"$Result\".split(\":\")[0] "},
+			    {"variable":"DevicePort",   "value":"DYNAMIK \"$Result\".split(\":\")[1]!=undefined?\"$Result\".split(\":\")[1]:\"80\" "}
+			]},{
+			"type":"http-rest",
+			"command": "{\"verb\":\"get\",\"call\":\"http://$DeviceURI:$DevicePort/web/deviceinfo\"}", 
+            "queryresult" : "$.e2deviceinfo",
+            "evalwrite":[
+                {"variable":"MyDevice",     "value":"DYNAMIK let device = $MyDevice; device.model_name = JSON.parse(\"$Result\").e2devicename[0]; JSON.stringify(device); "},
+                {"variable":"IsRegistered", "value":"DYNAMIK let device = $MyDevice; device.model_name != undefined;"}
+			],			
+			"evaldo":[{"test":"DYNAMIK let device = $MyDevice; device.model_name != undefined","then":"__PERSIST", "or":""}]}
+        ],
+        "command": {"type": "static", "command": "$MyDevice", "queryresult": ""}    
+    },
+    "template":{
+    "dynamicname":"DYNAMIK_INST_START DYNAMIK JSON.parse(\"$Result\").model_name DYNAMIK_INST_END",
+    "dynamicid":  "DYNAMIK_INST_START DYNAMIK JSON.parse(\"$Result\").ip DYNAMIK_INST_END",
     "variables":{
-      "PowerStatus": "",
-      "VolumeStatus": "",
-      "MuteStatus":"",
-      "Channel":"",
-      "EventDescription":"",
-      "EventDescriptionExtended":"",
-      "Eventname":"",
-      "EventDuration":"",
-      "Eventremaining":"",
-      "Recordactiv":"",
-      "enigma2URI": "10.10.50.10"
+        "PowerStatus": "",
+        "VolumeStatus": "",
+        "MuteStatus":"",
+        "Channel":"",
+        "EventDescription":"",
+        "EventDescriptionExtended":"",
+        "Eventname":"",
+        "EventDuration":"",
+        "Eventremaining":"",
+        "Recordactiv":"",
+        "enigma2URI": "DYNAMIK_INST_START DYNAMIK JSON.parse(\"$Result\").ip   DYNAMIK_INST_END",
+        "enigma2Port":"DYNAMIK_INST_START DYNAMIK JSON.parse(\"$Result\").port DYNAMIK_INST_END"
     },
     "labels":{
         "PowerStatus" :              {"label":"PowerStatus",              "listen":"PowerStatus"},
@@ -101,3 +144,4 @@
        "DIGIT 9":         {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=10"}
     }
   }
+}
