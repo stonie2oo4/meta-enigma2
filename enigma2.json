@@ -1,7 +1,7 @@
 {   "name":"Enigma2",
     "manufacturer":"VU+",
     "type":"DVB",
-    "version":2,
+    "version":3,
     "compatible-meta":"1.0.4",
     "persistedvariables":{
         "MyDevice": "",
