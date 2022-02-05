@@ -1,15 +1,16 @@
 {   "name":"Enigma2",
     "manufacturer":"VU+",
     "type":"DVB",
-    "version":3,
+    "version":5,
     "compatible-meta":"1.0.4",
     "persistedvariables":{
-        "MyDevice": "",
+        "MyDevices": "[]",
         "IsRegistered": false,
         "ToInitiate": true
     },
-	"variables":{
-	    "DeviceURI": "",
+	  "variables":{
+	  	  "NewDevice":"[]",
+	      "DeviceURI": "",
         "DevicePort":""
     },
     "register":{
@@ -26,7 +27,7 @@
 			"command":"$RegistrationCode",
 			"queryresult":"",
 			"evalwrite":[
-			    {"variable":"MyDevice",     "value":"DYNAMIK let device = {\"ip\":\"\", \"port\":\"\", \"model_name\":\"\"};  device.ip = \"$Result\".split(\":\")[0]; device.port = (\"$Result\".split(\":\")[1]!=undefined?\"$Result\".split(\":\")[1]:\"80\"); JSON.stringify(device); "},
+				  {"variable":"NewDevice",    "value":"DYNAMIK let device = {\"ip\":\"\", \"port\":\"\", \"model_name\":\"\"};  device.ip = \"$Result\".split(\":\")[0]; device.port = (\"$Result\".split(\":\")[1]!=undefined?\"$Result\".split(\":\")[1]:\"80\"); JSON.stringify(device); "},
 			    {"variable":"DeviceURI",    "value":"DYNAMIK \"$Result\".split(\":\")[0] "},
 			    {"variable":"DevicePort",   "value":"DYNAMIK \"$Result\".split(\":\")[1]!=undefined?\"$Result\".split(\":\")[1]:\"80\" "}
 			]},{
@@ -34,12 +35,12 @@
 			"command": "{\"verb\":\"get\",\"call\":\"http://$DeviceURI:$DevicePort/web/deviceinfo\"}", 
             "queryresult" : "$.e2deviceinfo",
             "evalwrite":[
-                {"variable":"MyDevice",     "value":"DYNAMIK let device = $MyDevice; device.model_name = JSON.parse(\"$Result\").e2devicename[0]; JSON.stringify(device); "},
-                {"variable":"IsRegistered", "value":"DYNAMIK let device = $MyDevice; device.model_name != undefined;"}
-			],			
-			"evaldo":[{"test":"DYNAMIK let device = $MyDevice; device.model_name != undefined","then":"__PERSIST", "or":""}]}
+                {"variable":"NewDevice",    "value":"DYNAMIK let device = $NewDevice; device.model_name = JSON.parse(\"$Result\").e2devicename[0]; JSON.stringify(device); "},
+				        {"variable":"MyDevices",    "value":"DYNAMIK let device = $NewDevice; let mydevices = $MyDevices; ((mydevices.findIndex(i=>i.ip==device.ip)==-1) ? mydevices.push(device) : mydevices); JSON.stringify(mydevices); "}
+            ],         			
+			"evaldo":[{"test":"DYNAMIK let device = $NewDevice; device.model_name != undefined","then":"__PERSIST", "or":""}]}
         ],
-        "command": {"type": "static", "command": "$MyDevice", "queryresult": ""}    
+        "command": {"type": "static", "command": "$MyDevices", "queryresult": "$.*"}  
     },
     "template":{
     "dynamicname":"DYNAMIK_INST_START DYNAMIK JSON.parse(\"$Result\").model_name DYNAMIK_INST_END",
