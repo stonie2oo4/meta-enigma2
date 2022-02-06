@@ -1,7 +1,7 @@
 {   "name":"Enigma2",
     "manufacturer":"VU+",
     "type":"DVB",
-    "version":5,
+    "version":6,
     "compatible-meta":"1.0.4",
     "persistedvariables":{
         "MyDevices": "[]",
@@ -106,6 +106,7 @@
     "buttons":{
        "POWER ON":        {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=4",                         "evaldo":[{"test":true, "then":"__INITIALISE", "or":""}]},
        "POWER OFF":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=1",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
+       "POWER STANDBY":   {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=5",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
        "CHANNEL UP":      {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=106"},
        "CHANNEL DOWN":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=105"},
        "CURSOR UP":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=103"},
