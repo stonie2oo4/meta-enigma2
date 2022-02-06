@@ -11,7 +11,7 @@ Install META Custom-Driver, Change IP to your need and have Fun.
 Power OFF in Deep Standby. Power ON only from Standby, can be done with WOL if Receiver supports it.
 
 # Autodiscovery 
-Not Supported
+Not supported. IP must registerd at the start of the driver.
 
 # Issues
 None
