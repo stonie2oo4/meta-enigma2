@@ -1,7 +1,7 @@
 {   "name":"Enigma2",
     "manufacturer":"VU+",
     "type":"DVB",
-    "version":6,
+    "version":7,
     "compatible-meta":"1.0.4",
     "persistedvariables":{
         "MyDevices": "[]",
@@ -36,7 +36,7 @@
             "queryresult" : "$.e2deviceinfo",
             "evalwrite":[
                 {"variable":"NewDevice",    "value":"DYNAMIK let device = $NewDevice; device.model_name = JSON.parse(\"$Result\").e2devicename[0]; JSON.stringify(device); "},
-				        {"variable":"MyDevices",    "value":"DYNAMIK let device = $NewDevice; let mydevices = $MyDevices; ((mydevices.findIndex(i=>i.ip==device.ip)==-1) ? mydevices.push(device) : mydevices); JSON.stringify(mydevices); "}
+				        {"variable":"MyDevices",    "value":"DYNAMIK let device = $NewDevice; let mydevices = $MyDevices; (device.model_name != undefined ? ((mydevices.findIndex(i=>i.ip==device.ip)==-1) ? mydevices.push(device) : mydevices) : mydevices); JSON.stringify(mydevices); "}
             ],         			
 			"evaldo":[{"test":"DYNAMIK let device = $NewDevice; device.model_name != undefined","then":"__PERSIST", "or":""}]}
         ],
