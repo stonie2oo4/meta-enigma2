@@ -1,7 +1,7 @@
 {   "name":"Enigma2",
     "manufacturer":"VU+",
     "type":"DVB",
-    "version":7,
+    "version":8,
     "compatible-meta":"1.0.4",
     "persistedvariables":{
         "MyDevices": "[]",
@@ -99,14 +99,14 @@
         "Enigma2RecordStatus" : {"type":"http-rest", "isHub":false, "command": "{\"verb\":\"get\",\"call\":\"http://$enigma2URI/web/timerlist\"}", "pooltime":"3000", "poolduration":"",
             "queryresult" : "$.",
             "evalwrite" : [ 
-                { "variable": "Recordactiv",  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2timerlist; res.e2timer[0].e2state[0] " }
+                { "variable": "Recordactiv",  "value": "DYNAMIK let res = JSON.parse(\"$Result\")[0].e2timerlist; res == \"\\n\" ? \"N/A\" : res.e2timer[0].e2state[0] "}
             ]
         }
 	},	
     "buttons":{
        "POWER ON":        {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=4",                         "evaldo":[{"test":true, "then":"__INITIALISE", "or":""}]},
-       "POWER OFF":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=1",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
-       "POWER STANDBY":   {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=5",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
+       "POWER OFF":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=5",                         "evaldo":[{"test":true, "then":"__CLEANUP",    "or":""}]},
+       "DEEP STANDBY":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/powerstate?newstate=1"},
        "CHANNEL UP":      {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=106"},
        "CHANNEL DOWN":    {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=105"},
        "CURSOR UP":       {"label":"", "type":"http-get", "command":"http://$enigma2URI/web/remotecontrol?command=103"},
